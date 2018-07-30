@@ -1,0 +1,17 @@
+https://firebase.google.com/docs/firestore/quickstart?hl=es-419
+
+https://www.youtube.com/watch?v=9rN29jENirI
+
+https://hackernoon.com/build-restful-api-in-go-and-mongodb-5e7f2ec4be94
+
+https://www.alexedwards.net/blog/golang-response-snippets
+
+https://www.youtube.com/watch?v=IWT2vCbTURs
+
+https://leanpub.com/howtodeployagowebapptoheroku101/read#leanpub-auto-create-a-procfile
+
+https://www.thepolyglotdeveloper.com/2017/10/handling-cors-golang-web-application/
+
+https://www.youtube.com/watch?v=KsFTKHslnGM
+
+https://vuejs.org/v2/cookbook/using-axios-to-consume-apis.html
