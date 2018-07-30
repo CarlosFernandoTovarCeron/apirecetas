@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Recetas</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div id="recipeApp">
+        <h1>{{nameApp}}</h1>
+          <table class="table">
+            <tr>
+              <td>Nombre receta:</td>
+              <td><input class="form-control form-control-sm" v-model="nombreReceta" type="text" cols="100"></td>
+            </tr>
+            <tr>
+              <td>Instrucciones:</td>
+              <td> <textarea class="form-control form-control-sm" v-model="instrucciones"  rows="5" cols="50"></textarea></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><button v-on:click="agregarReceta()" id="botonAgregar" type="submit"  class="btn btn-success"> Agregar Receta </button>
+                  <button v-on:click="modificarReceta()" id="botonModificar" type="submit" class="btn btn-primary">Modificar Receta </button>
+                  <button v-on:click="limpiar()" id="botonCancelar" type="submit" class="btn btn-danger">Cancelar </button>
+              </td>
+            </tr>
+          </table>
+        <table class="table">
+          <thead>
+            <th>Nombre Receta</th>
+            <th>Instrucciones</th>
+            <th>Acciones</th>
+          </thead>
+          <tbody>
+            <tr v-for="receta in recetas" >
+              <td>{{receta.Name}}</td>
+              <td>{{receta.Instructions}}</td>
+              <td>
+                <button v-on:click="editarReceta(receta)" class="btn btn-warning">Editar</button>
+                <button v-on:click="eliminarReceta(receta.id)" class="btn btn-danger">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      new Vue({
+        el:"#recipeApp",
+        data: {
+          nombreReceta : "",
+          instrucciones : "",
+          idreceta : "",
+          nameApp: "Aplicacion para recetas!",
+          recetas: []
+        },
+        mounted () {
+          this.cargarDatos()
+          $("#botonModificar").hide();
+          $("#botonCancelar").hide();
+        },
+        methods:{
+          eliminarReceta : function(id){
+            console.log(id)
+            axios
+              .delete('https://apirecetas.herokuapp.com/recetas', {data: {'id': id}})
+              .then(response => (this.limpiar()))
+          },
+          modificarReceta : function(){
+            axios
+              .put('https://apirecetas.herokuapp.com/recetas', {'id': this.idreceta, 'Data':{'Name':this.nombreReceta, 'Instructions':this.instrucciones} })
+              .then(response => (this.limpiar()))
+
+          },
+          editarReceta : function(receta){
+            console.log(receta)
+            this.nombreReceta = receta.Name
+            this.instrucciones = receta.Instructions
+            this.idreceta = receta.id
+
+            $("#botonAgregar").hide();
+            $("#botonModificar").show();
+            $("#botonCancelar").show();
+
+            $(document).ready(function(){
+               $(window).scrollTop(0);
+           });
+
+          },
+          agregarReceta : function(){
+            console.log("AGREGAR RECETA")
+            axios
+            .post('https://apirecetas.herokuapp.com/recetas', {
+                Name: this.nombreReceta,
+                Instructions: this.instrucciones
+              })
+              .then(response => (this.limpiar()))
+              .catch(function (error) {
+                console.log(error);
+              });
+          },
+          cargarDatos : function(){
+            console.log("ENTRA")
+            axios
+              .get('https://apirecetas.herokuapp.com/recetas')
+              .then(response => (this.recetas = response.data))
+          },
+          limpiar : function(){
+              this.cargarDatos()
+              this.nombreReceta = ""
+              this.instrucciones = ""
+              this.idreceta = ""
+              $("#botonAgregar").show();
+              $("#botonModificar").hide();
+              $("#botonCancelar").hide();
+          }
+        }
+
+      })
+    </script>
+
+  </body>
+</html>
